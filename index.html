@@ -5,8 +5,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="author" content="Paulo Jerônimo &lt;pj@paulojeronimo.com&gt;, 2021-02-02 01:49:34 -0300">
-<title>Exemplo de aplicação fullstack (backend em Quarkus e frontend em React) executada via Docker Compose</title>
+<meta name="author" content="Paulo Jerônimo &lt;pj@paulojeronimo.com&gt;, 2021-02-02 02:02:45 -0300">
+<title>Exemplo de aplicação Full Stack (backend em Quarkus, frontend em React) executada via Docker Compose</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -440,20 +440,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Exemplo de aplicação fullstack (backend em Quarkus e frontend em React) executada via Docker Compose</h1>
+<h1>Exemplo de aplicação Full Stack (backend em Quarkus, frontend em React) executada via Docker Compose</h1>
 <div class="details">
-<span id="author" class="author">Paulo Jerônimo &lt;pj@paulojeronimo.com&gt;, 2021-02-02 01:49:34 -0300</span><br>
+<span id="author" class="author">Paulo Jerônimo &lt;pj@paulojeronimo.com&gt;, 2021-02-02 02:02:45 -0300</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Conteúdo</div>
 <ul class="sectlevel1">
-<li><a href="#introdução">Introdução</a></li>
-<li><a href="#execucao">Execução</a></li>
-<li><a href="#construcao">Construção e Testes (commit a commit)</a>
+<li><a href="#introdução">1. Introdução</a></li>
+<li><a href="#execucao">2. Execução</a></li>
+<li><a href="#construcao">3. Construção e Testes (commit a commit)</a>
 <ul class="sectlevel2">
-<li><a href="#inicialização-do-projeto-pelo-backend">Inicialização do projeto (pelo backend)</a></li>
-<li><a href="#adição-do-frontend-inicial">Adição do frontend inicial</a></li>
-<li><a href="#adição-do-docker-compose">Adição do Docker Compose</a></li>
+<li><a href="#inicialização-do-projeto-pelo-backend">3.1. Inicialização do projeto (pelo backend)</a></li>
+<li><a href="#adição-do-frontend-inicial">3.2. Adição do frontend inicial</a></li>
+<li><a href="#adição-do-docker-compose">3.3. Adição do Docker Compose</a></li>
 </ul>
 </li>
 </ul>
@@ -461,7 +461,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="introdução"><a class="anchor" href="#introdução"></a>Introdução</h2>
+<h2 id="introdução"><a class="anchor" href="#introdução"></a>1. Introdução</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Este é uma aplicação de exemplo (e um tutorial de desenvolvimento) que
@@ -472,25 +472,18 @@ microserviços:</p>
 <div class="ulist">
 <ul>
 <li>
-<p>Microserviço A - Um frontend escrito em React que consome um serviço
+<p>Microserviço A - Um frontend escrito em <a href="https://reactjs.org/" target="_blank" rel="noopener">React</a> que consome um serviço
 exposto pelo Microserviço B.</p>
 </li>
 <li>
-<p>Microserviço B - Um backend escrito em Quarkus.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Este serviço consome</p>
-</li>
-</ul>
-</div>
+<p>Microserviço B - Um backend escrito em <a href="https://quarkus.io/" target="_blank" rel="noopener">Quarkus</a>.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="execucao"><a class="anchor" href="#execucao"></a>Execução</h2>
+<h2 id="execucao"><a class="anchor" href="#execucao"></a>2. Execução</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="content">
@@ -517,10 +510,10 @@ na URL especificada.
 </div>
 </div>
 <div class="sect1">
-<h2 id="construcao"><a class="anchor" href="#construcao"></a>Construção e Testes (commit a commit)</h2>
+<h2 id="construcao"><a class="anchor" href="#construcao"></a>3. Construção e Testes (commit a commit)</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="inicialização-do-projeto-pelo-backend"><a class="anchor" href="#inicialização-do-projeto-pelo-backend"></a>Inicialização do projeto (pelo backend)</h3>
+<h3 id="inicialização-do-projeto-pelo-backend"><a class="anchor" href="#inicialização-do-projeto-pelo-backend"></a>3.1. Inicialização do projeto (pelo backend)</h3>
 <div class="listingblock">
 <div class="content">
 <pre>$ rm -rf $APP_DIR/tutorial &amp;&amp; mkdir -p $APP_DIR/tutorial &amp;&amp; cd $_
@@ -565,7 +558,7 @@ $ git commit -m 'Initial commit'</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="adição-do-frontend-inicial"><a class="anchor" href="#adição-do-frontend-inicial"></a>Adição do frontend inicial</h3>
+<h3 id="adição-do-frontend-inicial"><a class="anchor" href="#adição-do-frontend-inicial"></a>3.2. Adição do frontend inicial</h3>
 <div class="listingblock">
 <div class="content">
 <pre>$ cd src/main</pre>
@@ -584,7 +577,7 @@ $ git commit -m 'Added initial frontend'</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="adição-do-docker-compose"><a class="anchor" href="#adição-do-docker-compose"></a>Adição do Docker Compose</h3>
+<h3 id="adição-do-docker-compose"><a class="anchor" href="#adição-do-docker-compose"></a>3.3. Adição do Docker Compose</h3>
 <div class="listingblock">
 <div class="content">
 <pre>$ cd $APP_DIR/tutorial
