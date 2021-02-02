@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="author" content="Paulo Jerônimo &lt;pj@paulojeronimo.com&gt;, 2021-02-02 02:02:45 -0300">
+<meta name="author" content="Paulo Jerônimo &lt;pj@paulojeronimo.com&gt;, 2021-02-02 05:56:17 -0300">
 <title>Exemplo de aplicação Full Stack (backend em Quarkus, frontend em React) executada via Docker Compose</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -442,20 +442,30 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Exemplo de aplicação Full Stack (backend em Quarkus, frontend em React) executada via Docker Compose</h1>
 <div class="details">
-<span id="author" class="author">Paulo Jerônimo &lt;pj@paulojeronimo.com&gt;, 2021-02-02 02:02:45 -0300</span><br>
+<span id="author" class="author">Paulo Jerônimo &lt;pj@paulojeronimo.com&gt;, 2021-02-02 05:56:17 -0300</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Conteúdo</div>
 <ul class="sectlevel1">
 <li><a href="#introdução">1. Introdução</a></li>
-<li><a href="#execucao">2. Execução</a></li>
-<li><a href="#construcao">3. Construção e Testes (commit a commit)</a>
+<li><a href="#execucao">2. Execução</a>
 <ul class="sectlevel2">
-<li><a href="#inicialização-do-projeto-pelo-backend">3.1. Inicialização do projeto (pelo backend)</a></li>
-<li><a href="#adição-do-frontend-inicial">3.2. Adição do frontend inicial</a></li>
-<li><a href="#adição-do-docker-compose">3.3. Adição do Docker Compose</a></li>
+<li><a href="#pré-requisitos">2.1. Pré-requisitos</a></li>
+<li><a href="#passo-a-passo">2.2. Passo a passo</a></li>
 </ul>
 </li>
+<li><a href="#construcao">3. Construção e Testes (commit a commit)</a>
+<ul class="sectlevel2">
+<li><a href="#pré-requisitos-2">3.1. Pré-requisitos</a></li>
+<li><a href="#inicialização-do-projeto-pelo-backend">3.2. Inicialização do projeto (pelo backend)</a></li>
+<li><a href="#adição-do-frontend-inicial">3.3. Adição do frontend inicial</a></li>
+<li><a href="#adição-de-suporte-ao-docker-compose">3.4. Adição de suporte ao Docker Compose</a></li>
+<li><a href="#alteração-do-frontend-para-exibição-do-endpoint-hello">3.5. Alteração do frontend para exibição do endpoint /hello</a></li>
+<li><a href="#adicao-do-swagger">3.6. Adição de suporte ao Swagger</a></li>
+</ul>
+</li>
+<li><a href="#limitacoes">4. Limitações e TODOs</a></li>
+<li><a href="#referências">5. Referências</a></li>
 </ul>
 </div>
 </div>
@@ -464,34 +474,67 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="introdução"><a class="anchor" href="#introdução"></a>1. Introdução</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Este é uma aplicação de exemplo (e um tutorial de desenvolvimento) que
-demonstra a <a href="#execucao">Execução</a> (e a <a href="#construcao">Construção e Testes (commit a commit)</a>) de uma aplicação muito
-simples, mas fullstack (backend e frontend), composta de dois
-microserviços:</p>
+<p>Este documento apresenta uma <a href="https://github.com/paulojeronimo/quarkus-react-sample" target="_blank" rel="noopener">pequena aplicação de exemplo</a> (e
+um <a href="#construcao">tutorial</a> de seu desenvolvimento) que neste momento contém várias
+<a href="#limitacoes">Limitações e TODOs</a>. Contudo, ele demonstra a <a href="#execucao">Execução</a> e a <a href="#construcao">Construção e Testes (commit a commit)</a>
+de uma aplicação muito simples, <em>full stack</em> (com <em>backend</em> e
+<em>frontend</em>), composta de dois microserviços e que pode ser iniciada via
+<a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">Docker Compose</a>, rapidamente, em um ambiente de desenvolvimento.</p>
 </div>
-<div class="ulist">
-<ul>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>Microserviço A - Um frontend escrito em <a href="https://reactjs.org/" target="_blank" rel="noopener">React</a> que consome um serviço
-exposto pelo Microserviço B.</p>
+<p><a id="microservico-a"></a> Microserviço A - Um <em>frontend</em> escrito em <a href="https://reactjs.org/" target="_blank" rel="noopener">React</a>
+que consome um serviço exposto pelo Microserviço B.</p>
 </li>
 <li>
-<p>Microserviço B - Um backend escrito em <a href="https://quarkus.io/" target="_blank" rel="noopener">Quarkus</a>.</p>
+<p><a id="microservico-b"></a> Microserviço B - Um <em>backend</em> escrito em <a href="https://quarkus.io/" target="_blank" rel="noopener">Quarkus</a>.</p>
 </li>
-</ul>
+</ol>
+</div>
+<div class="paragraph">
+<p>Além de demonstrar a integração entre um <em>frontend</em> e um <em>backend</em>
+através de uma aplicação onde contêineres Docker são regidos pelo
+<a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">Docker Compose</a>, esta aplicação também demonstra a <a href="#adicao-do-swagger">Adição de suporte ao Swagger</a>
+e um código de teste automatizado mínimo utilizando o <code>QuarkuzTest</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="execucao"><a class="anchor" href="#execucao"></a>2. Execução</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="pré-requisitos"><a class="anchor" href="#pré-requisitos"></a>2.1. Pré-requisitos</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Git instalado.</p>
+</li>
+<li>
+<p>Um terminal executando o Bash.</p>
+</li>
+<li>
+<p><a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">Docker Compose</a> instalado.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="passo-a-passo"><a class="anchor" href="#passo-a-passo"></a>2.2. Passo a passo</h3>
+<div class="paragraph">
+<p>Faça um clone do código fonte do projeto:</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre>$ git clone https://github.com/paulojeronimo/quarkus-react-sample
-$ cd `basename $_`
-$ export APP_DIR=$PWD &amp;&amp; cd $APP_DIR/final
-$ docker-compose up -d
-$ open http://localhost:3000</pre>
+<pre>$ git clone https://github.com/paulojeronimo/quarkus-react-sample &amp;&amp; cd `basename $_`</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Exporte a variável <code>APP_DIR</code> e vá para o diretório <code>final</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ export APP_DIR=$PWD &amp;&amp; cd $APP_DIR/final</pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -501,11 +544,51 @@ $ open http://localhost:3000</pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-O comando <code>open</code>, em um terminal macOS, abre o browser <em>default</em>
-na URL especificada.
+Esta variável é utilizada na construção do <a href="#construcao">tutorial</a> a seguir.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Inicie o projeto utilizando o <a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">Docker Compose</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker-compose up -d</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Abra seu browser <em>default</em> acessando a URL disponibilizada pelo
+<a href="#microservico-a">Microserviço A</a>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ open http://localhost:3000</pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>O comando <code>open</code>, disponível em um terminal macOS, pode ser
+substituído (no Linux) pelo comando <code>xdg-open</code>.</p>
+</li>
+<li>
+<p>A aplicação deverá apresentar, como saída, a mensagem obtida do
+<em>endpoint</em> <code>/hello</code> disponibilizado pelo <a href="#microservico-b">Microserviço B</a>.</p>
+</li>
+</ol>
+</div>
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 </div>
@@ -513,7 +596,20 @@ na URL especificada.
 <h2 id="construcao"><a class="anchor" href="#construcao"></a>3. Construção e Testes (commit a commit)</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="inicialização-do-projeto-pelo-backend"><a class="anchor" href="#inicialização-do-projeto-pelo-backend"></a>3.1. Inicialização do projeto (pelo backend)</h3>
+<h3 id="pré-requisitos-2"><a class="anchor" href="#pré-requisitos-2"></a>3.1. Pré-requisitos</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>JDK 11 e Maven instalados.</p>
+</li>
+<li>
+<p>Node.js instalado.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="inicialização-do-projeto-pelo-backend"><a class="anchor" href="#inicialização-do-projeto-pelo-backend"></a>3.2. Inicialização do projeto (pelo backend)</h3>
 <div class="listingblock">
 <div class="content">
 <pre>$ rm -rf $APP_DIR/tutorial &amp;&amp; mkdir -p $APP_DIR/tutorial &amp;&amp; cd $_
@@ -530,12 +626,12 @@ $ mvn io.quarkus:quarkus-maven-plugin:1.11.1.Final:create \
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ mvn clean test</pre>
+<pre>$ ./mvnw clean test</pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre>$ mvn quarkus:dev &amp;</pre>
+<pre>$ ./mvnw quarkus:dev &amp;</pre>
 </div>
 </div>
 <div class="listingblock">
@@ -558,7 +654,7 @@ $ git commit -m 'Initial commit'</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="adição-do-frontend-inicial"><a class="anchor" href="#adição-do-frontend-inicial"></a>3.2. Adição do frontend inicial</h3>
+<h3 id="adição-do-frontend-inicial"><a class="anchor" href="#adição-do-frontend-inicial"></a>3.3. Adição do frontend inicial</h3>
 <div class="listingblock">
 <div class="content">
 <pre>$ cd src/main</pre>
@@ -577,13 +673,188 @@ $ git commit -m 'Added initial frontend'</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="adição-do-docker-compose"><a class="anchor" href="#adição-do-docker-compose"></a>3.3. Adição do Docker Compose</h3>
+<h3 id="adição-de-suporte-ao-docker-compose"><a class="anchor" href="#adição-de-suporte-ao-docker-compose"></a>3.4. Adição de suporte ao Docker Compose</h3>
 <div class="listingblock">
 <div class="content">
 <pre>$ cd $APP_DIR/tutorial
 $ cp ../initial/docker-compose.yml .</pre>
 </div>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker-compose up -d</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker-compose logs -f</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl http://localhost:8080/hello
+Hello RESTEasy</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git add .
+$ git commit -m 'Added docker-compose support'</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="alteração-do-frontend-para-exibição-do-endpoint-hello"><a class="anchor" href="#alteração-do-frontend-para-exibição-do-endpoint-hello"></a>3.5. Alteração do frontend para exibição do endpoint /hello</h3>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker-compose down</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git apply ../patches/src/main/frontend/src/App.js.1.diff</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git apply ../patches/src/main/frontend/package.json.1.diff</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git apply ../patches/src/main/frontend/.gitignore.1.diff</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker-compose up
+$ open http://localhost:3000</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git add .
+$ git commit -m 'Updated frontend to show message from backend'</pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="adicao-do-swagger"><a class="anchor" href="#adicao-do-swagger"></a>3.6. Adição de suporte ao Swagger</h3>
+<div class="listingblock">
+<div class="content">
+<pre>$ docker-compose down</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ ./mvnw quarkus:add-extension -Dextensions="quarkus-smallrye-openapi"</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git difftool</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ ./mvnw compile quarkus:dev &amp;</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ curl http://localhost:8080/q/openapi</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ echo 'quarkus.swagger-ui.always-include=true' &gt;&gt; src/main/resources/applicagion.properties
+$ kill %1</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ !./mvnw compile
+$ open http://localhost:8080/q/swagger-ui</pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>$ git add .
+$ git commit -am 'Added swagger support'</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="limitacoes"><a class="anchor" href="#limitacoes"></a>4. Limitações e TODOs</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Este projeto serve, neste momento, apenas para um ambiente de
+desenvolvimento:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Observe que, ainda, não são criadas imagens otimizadas contendo
+versões com código nativo.
+O Quarkus está preparado para criá-las utilizando a <a href="https://www.graalvm.org/" target="_blank" rel="noopener">GraalVM</a> mas isso
+ainda não está visível através de comandos apresentados neste tutorial.</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Próximas versões deste tutorial irão:</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Adicionar suporte ao RESTEasy Client, como demonstrado no guia
+<a href="https://quarkus.io/guides/rest-client" target="_blank" rel="noopener">rest-client</a>.</p>
+</li>
+<li>
+<p>Demonstrar o suporte a criação de aplicações nativas utilizando a
+<a href="https://www.graalvm.org/" target="_blank" rel="noopener">GraalVM</a>.</p>
+</li>
+<li>
+<p>Explorar outras funcionalidades que também são apresentadas no
+<a href="https://quarkus.io/quarkus-workshops/super-heroes/" target="_blank" rel="noopener">Quarkus Workshop</a></p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="referências"><a class="anchor" href="#referências"></a>5. Referências</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://quarkus.io/guides/getting-started" class="bare">https://quarkus.io/guides/getting-started</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/getting-started-testing" class="bare">https://quarkus.io/guides/getting-started-testing</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/maven-tooling" class="bare">https://quarkus.io/guides/maven-tooling</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/rest-client" class="bare">https://quarkus.io/guides/rest-client</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/rest-json" class="bare">https://quarkus.io/guides/rest-json</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/guides/openapi-swaggerui" class="bare">https://quarkus.io/guides/openapi-swaggerui</a></p>
+</li>
+<li>
+<p><a href="https://quarkus.io/quarkus-workshops/super-heroes/" class="bare">https://quarkus.io/quarkus-workshops/super-heroes/</a></p>
+</li>
+</ol>
 </div>
 </div>
 </div>
