@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  frontend:
+    image: node
+    volumes:
+      - "./src/main/frontend:/app"
+    ports:
+      - 3000:3000 # Frontend HTTP server port
+    # Without "stdin_open: true", react-scripts exits immediately.
+    # See https://github.com/facebook/create-react-app/issues/8688
+    stdin_open: true
+    working_dir: /app
+    command: "sh -c \"yarn install && yarn start\""
+
+  backend:
+    image: maven
+    volumes:
+      - "./:/app"
+      # Mounting user's local .m2-directory,
+      # for custom settings.xml and for caching dependencies.
+      - "~/.m2:/root/.m2"
+    ports:
+      - 5005:5005 # Debug port
+      - 8080:8080 # Backend HTTP server port
+    working_dir: /app
+    command: "mvn quarkus:dev -Dquarkus.http.host=0.0.0.0"

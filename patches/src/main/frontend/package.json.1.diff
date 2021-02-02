@@ -1,0 +1,12 @@
+diff --git a/src/main/frontend/package.json b/src/main/frontend/package.json
+index b0d1a3a..8e90d98 100644
+--- a/src/main/frontend/package.json
++++ b/src/main/frontend/package.json
+@@ -2,6 +2,7 @@
+   "name": "frontend",
+   "version": "0.1.0",
+   "private": true,
++  "proxy": "http://backend:8080",
+   "dependencies": {
+     "@testing-library/jest-dom": "^5.11.4",
+     "@testing-library/react": "^11.1.0",

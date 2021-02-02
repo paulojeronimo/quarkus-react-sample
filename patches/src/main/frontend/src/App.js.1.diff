@@ -1,0 +1,28 @@
+diff --git a/src/main/frontend/src/App.js b/src/main/frontend/src/App.js
+index 3784575..0e80052 100644
+--- a/src/main/frontend/src/App.js
++++ b/src/main/frontend/src/App.js
+@@ -1,13 +1,22 @@
++import React, { useState, useEffect } from 'react';
+ import logo from './logo.svg';
+ import './App.css';
+ 
+ function App() {
++  const [msg, setMsg] = useState("N/A")
++
++  useEffect(() => {
++    fetch('hello')
++      .then(response => response.text())
++      .then(data => setMsg(data));
++  }, [])
++
+   return (
+     <div className="App">
+       <header className="App-header">
+         <img src={logo} className="App-logo" alt="logo" />
+         <p>
+-          Edit <code>src/App.js</code> and save to reload.
++          Message from Quarkus: {msg}
+         </p>
+         <a
+           className="App-link"

@@ -1,0 +1,10 @@
+diff --git a/src/main/frontend/.gitignore b/src/main/frontend/.gitignore
+index 4d29575..d7b8f1b 100644
+--- a/src/main/frontend/.gitignore
++++ b/src/main/frontend/.gitignore
+@@ -21,3 +21,5 @@
+ npm-debug.log*
+ yarn-debug.log*
+ yarn-error.log*
++
++.eslintcache
